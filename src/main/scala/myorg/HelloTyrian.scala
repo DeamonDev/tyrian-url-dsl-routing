@@ -349,7 +349,7 @@ object HelloTyrian extends TyrianApp[Msg, Model]:
     }
 
   val popstateEvent: Sub[IO, Msg] =
-    Sub.fromEvent("popstate", dom.window) { _ =>
+    Sub.fromEvent("popstate", dom.window) { (e: PopStateEvent) =>
       Option(Msg.URLChanged)
     }
 
