@@ -10,7 +10,8 @@ With help of `url-dsl` library I baked simple working front-end routing solution
 5. `/user` with query parameter `age` (also meant to be `Int`).
 
 
-All the other URLs are redirect to custom `notFound` page. 
+All the other URLs are redirect to custom `notFound` page. Besides of routing I also added two simple subcomponents to show
+how to modularize application. 
 
 ## Setup instructions
 
