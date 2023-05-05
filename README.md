@@ -1,6 +1,11 @@
 # Hello Tyrian
 
 ## What is it?!
+
+This project is related to my Pull Request: 
+
+https://github.com/PurpleKingdomGames/tyrian/pull/195
+
 With help of `url-dsl` library I baked simple working front-end routing solution which works pretty well with `Tyrian`. There are several URLs: 
 
 1. `/home`
