@@ -383,28 +383,29 @@ object Page {
       combinator: UrlMatching[X, Y] => P
   )
 
-  def routerFromList(
-      xs: List[SimpleRoute[?, Page] | ComplexRoute[?, ?, Page]],
-      path: String
-  ): Page =
+  def routerFromList[P](
+      path: String,
+      notFound: P,
+      xs: List[SimpleRoute[?, P] | ComplexRoute[?, ?, P]]
+  ): P =
     xs match {
-      case Nil => Page.NotFound
-      case (head: SimpleRoute[?, Page]) :: Nil =>
+      case Nil => notFound
+      case (head: SimpleRoute[?, P]) :: Nil =>
         head.pathSegment
           .matchRawUrl(path)
-          .fold[Page](_ => Page.NotFound, head.combinator(_))
-      case (head: ComplexRoute[?, ?, Page]) :: Nil =>
+          .fold[P](_ => notFound, head.combinator(_))
+      case (head: ComplexRoute[?, ?, P]) :: Nil =>
         head.pathSegment
           .matchRawUrl(path)
-          .fold[Page](_ => Page.NotFound, head.combinator(_))
-      case (head: SimpleRoute[?, Page]) :: tail =>
+          .fold[P](_ => notFound, head.combinator(_))
+      case (head: SimpleRoute[?, P]) :: tail =>
         head.pathSegment
           .matchRawUrl(path)
-          .fold[Page](_ => routerFromList(tail, path), head.combinator(_))
-      case (head: ComplexRoute[?, ?, Page]) :: tail =>
+          .fold[P](_ => routerFromList[P](path, notFound, tail), head.combinator(_))
+      case (head: ComplexRoute[?, ?, P]) :: tail =>
         head.pathSegment
           .matchRawUrl(path)
-          .fold[Page](_ => routerFromList(tail, path), head.combinator(_))
+          .fold[P](_ => routerFromList[P](path, notFound, tail), head.combinator(_))
     }
 
   extension (p: Page)
@@ -423,6 +424,8 @@ object Page {
 
   extension (path: String)
     def getPage(): Page = routerFromList(
+      path = path,
+      notFound = Page.NotFound,
       List(
         SimpleRoute[Unit, Page](homePath, _ => Page.Home),
         SimpleRoute[Unit, Page](counterPath, _ => Page.Counter),
@@ -436,7 +439,6 @@ object Page {
           { case UrlMatching(_, ageOption) => Page.UserAgePage(ageOption) }
         )
       ),
-      path
     )
 
 }
